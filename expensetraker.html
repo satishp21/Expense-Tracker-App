@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form onsubmit="saveToLocalStorage(event)">
+        <label>Expense amount</label>
+        <input type ="number" name="username" id ="usernameInputTag" required>
+        <label>Description</label>
+        <input type ="text" name="emailId" id="emailInputTag" required>
+        <label>Category</label>
+        <input type ="text" name="phonenumber" id ="'phonenumberInputTag'"required>
+        <label for="submit">Add Expense</label>
+        <input type="submit" name ="submit">
+        <ul id ="listofitems">
+        </ul>
+    </form>
+
+    <script src="expensetraker.js">
+    </script>
+</body>
+</html>
