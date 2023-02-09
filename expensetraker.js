@@ -1,29 +1,28 @@
 function saveToLocalStorage(event){
     event.preventDefault();
-    const name=event.target.username.value;
-    const email=event.target.emailId.value;
-    const phonenumber=event.target.phonenumber.value;
+    const amount=event.target.expenseamount.value;
+    const Description=event.target.Description.value;
+    const Catagory=event.target.Catagory.value;
 
-    localStorage.setItem("name",name);
-    localStorage.setItem("email",email);
-    localStorage.setItem("phonenumber",phonenumber);
+    // localStorage.setItem("expense amount",amount);
+    // localStorage.setItem("Description",Description);
+    // localStorage.setItem("Catagory",Catagory);
 //storing details in single line in local storage 
     const obj={
-        name,
-        email,
-        phonenumber
+        amount,
+        Description,
+        Catagory
     }
-   localStorage.setItem("userdetails",JSON.stringify(obj))
-
+//    localStorage.setItem("expensedetails",JSON.stringify(obj))
 //storing details of multiple users
-localStorage.setItem(obj.email,JSON.stringify(obj))
+localStorage.setItem(obj.Description,JSON.stringify(obj))
 showuseronscreen(obj)
 }
 
 function showuseronscreen(obj){
    const parenteliment=document.getElementById("listofitems") 
    const childelem=document.createElement("li")
-   childelem.textContent=obj.name+"-"+obj.email+"-"+obj.phonenumber
+   childelem.textContent=obj.amount+"-"+obj.Description+"-"+obj.Catagory
 
 // creating delete button which deletes data from screen as well as local storage.  
 
@@ -31,7 +30,7 @@ function showuseronscreen(obj){
     deletebutton.type="button"
     deletebutton.value="Delete"
     deletebutton.onclick = () => {
-        localStorage.removeItem(obj.email)
+        localStorage.removeItem(obj.Description)
         parenteliment.removeChild(childelem)
     }
 
@@ -40,11 +39,11 @@ function showuseronscreen(obj){
         editbutton.type="button"
         editbutton.value="Edit"
         editbutton.onclick = () => {
-            localStorage.removeItem(obj.email)
+            localStorage.removeItem(obj.Description)
             parenteliment.removeChild(childelem)
-            document.getElementById('usernameInputTag').value=obj.name
-            document.getElementById('emailInputTag').value=obj.email
-            document.getElementById('phonenumberInputTag').value=obj.phonenumber
+            document.getElementById('expenseInputTag').value=obj.amount
+            document.getElementById('DescriptionInputTag').value=obj.Description
+            document.getElementById('CatagoryInputTag').value=obj.Catagory
     }
     childelem.appendChild(deletebutton)
     childelem.appendChild(editbutton)
