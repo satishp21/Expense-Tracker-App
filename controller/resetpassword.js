@@ -1,8 +1,6 @@
-const uuid = require('uuid');
-const sgMail = require('@sendgrid/mail');
-const Sib = require('sib-api-v3-sdk')
+const sib = require('sib-api-v3-sdk')
 require('dotenv').config()
-const client = Sib.ApiClient.instance
+const client = sib.ApiClient.instance
 const bcrypt = require('bcrypt');
 
 const User = require('../models/users');
@@ -11,54 +9,56 @@ const Forgotpassword = require('../models/forgotpassword');
 const forgotpassword = async (req, res) => {
     try {
         const { email } =  req.body;
-        const user = await User.findOne({where : { email }});
+        const user = await User.findOne({ email:email });
         if(user){
-            const id = uuid.v4();
-            console.log(id,'id')
-            await user.createForgotpassword({ id , active: true })
-                .catch(err => {
-                    throw new Error(err)
-                })
 
+            const forgetpass = new Forgotpassword({  active: true, userId:user._id.toString() })
+            forgetpass.save()
+            let id = forgetpass._id.toString()
+            // return res.json({ id:forgetpass._id.toString(), message: 'success forgrtpass req', sucess: true })
+
+            const client = sib.ApiClient.instance
             const apiKey = client.authentications['api-key']
             apiKey.apiKey = process.env.API_KEY
-
-            const  tranEmailApi = new Sib.TransactionalEmailsApi()
-
-            const sender = {
-                email : process.env.EMAIL
-            }
-            const receivers = {
-                email : process.env.EMAIL
-            }
         
-            response = await tranEmailApi.sendTransacEmail({
+            const tranEmailApi = new sib.TransactionalEmailsApi()
+            
+            const sender = {
+                email : 'satishdpanchal786@gmail.com',
+                name : 'satish'
+            }
+            
+            const recievers = [
+                {
+                    email : email,
+                },
+            ]
+        
+            tranEmailApi.sendTransacEmail({
                 sender,
-                to:receivers,
-                subject:'this mail is for your password change request',
-                textContent :`this mail is for your password change request ,http://localhost:3000/password/resetpassword`
+                to: recievers,
+                subject: 'forgotpass please reset',
+                textContent: `Follow the link and reset password`,
+                htmlContent: `Click on the link below to reset password <br> <a href="http://localhost:3000/password/resetpassword/${id}">Reset password</a>`,
             })
-  
-            .catch((error) => {
-                console.log(error)
-                throw new Error(error);
-            })
-            //send mail
+
+            return res.status(202).json({ message: "mail sent succesfully", sucess: true });
+            
+
         }else {
             throw new Error('User doesnt exist')
         }
     } catch(err){
         console.error(err)
-        return res.json({ message: err, sucess: false });
+        return res.status(500).json({ message: err, sucess: false });
     }
-
 }
 
 const resetpassword = (req, res) => {
     const id =  req.params.id;
-    Forgotpassword.findOne({ where : { id }}).then(forgotpasswordrequest => {
+    Forgotpassword.findOne({ _id :id }).then(forgotpasswordrequest => {
         if(forgotpasswordrequest){
-            forgotpasswordrequest.update({ active: false});
+            Forgotpassword.updateOne({ _id :id },{ active: false});
             res.status(200).send(`<html>
                                     <script>
                                         function formsubmitted(e){
@@ -82,8 +82,8 @@ const updatepassword = (req, res) => {
     try {
         const { newpassword } = req.query;
         const { resetpasswordid } = req.params;
-        Forgotpassword.findOne({ where : { id: resetpasswordid }}).then(resetpasswordrequest => {
-            User.findOne({where: { id : resetpasswordrequest.userId}}).then(user => {
+        Forgotpassword.findOne({ _id: resetpasswordid }).then(resetpasswordrequest => {
+            User.findOne( { _id : resetpasswordrequest.userId}).then(user => {
                 // console.log('userDetails', user)
                 if(user) {
                     //encrypt the password
@@ -99,7 +99,7 @@ const updatepassword = (req, res) => {
                                 console.log(err);
                                 throw new Error(err);
                             }
-                            user.update({ password: hash }).then(() => {
+                            User.updateOne({ _id : resetpasswordrequest.userId},{ password: hash }).then(() => {
                                 res.status(201).json({message: 'Successfuly update the new password'})
                             })
                         });

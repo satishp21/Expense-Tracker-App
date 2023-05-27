@@ -8,8 +8,8 @@ const authenticate = (req, res, next) => {
         console.log(token);
         const user = jwt.verify(token, process.env.SEC_KEY);
         console.log('userID >>>> ', user.userId)
-        User.findByPk(user.userId).then(user => {
-
+        User.findById(user.userId).then(user => {
+            console.log(user,"this is the userrrrr")
             req.user = user; ///ver
             next();
         })
@@ -19,7 +19,6 @@ const authenticate = (req, res, next) => {
         return res.status(401).json({success: false})
         // err
       }
-
 }
 
 module.exports = {

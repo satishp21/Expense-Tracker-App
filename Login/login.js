@@ -7,6 +7,7 @@ function login(e) {
         password: form.get("password")
 
     }
+    console.log(loginDetails, "this is login details")
 
     axios.post('http://localhost:3000/user/login',loginDetails).then(response => {
         
@@ -14,7 +15,7 @@ function login(e) {
             console.log(response)
             console.log(response.data,response.data.user, "this is response.data.user")
             localStorage.setItem('token', response.data.token);
-            // localStorage.setItem('userDetails', JSON.stringify(response.data.user))
+
             window.location.href = "../ExpenseTracker/index.html" // change the page on successful login
         } else {
             throw new Error('Failed to login')

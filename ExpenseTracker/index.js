@@ -11,7 +11,7 @@ function addNewExpense(e){
     const token  = localStorage.getItem('token')
     axios.post('http://localhost:3000/expense/addexpense',expenseDetails,  { headers: {"Authorization" : token} })
         .then((response) => {
-            // console.log(response,"this is the resposwe you are lookigng for")
+        // console.log(response,"this is the resposwe you are lookigng for")
         addNewExpensetoUI(response.data.expense);
     }).catch(err => showError(err))
 }
@@ -35,8 +35,6 @@ function RPPvalue(){
         console.log(err)
         showError(err)
     })
-    
-
 }
 
 function showPremiumuserMessage() {
@@ -79,15 +77,22 @@ window.addEventListener('DOMContentLoaded', ()=> {
 });
 
 function addNewExpensetoUI(expense){
-    const parentElement = document.getElementById('listOfExpenses');
-    const expenseElemId = `expense-${expense.id}`;
-    parentElement.innerHTML += `
-        <li id=${expenseElemId}>
-            ${expense.expenseamount} - ${expense.category} - ${expense.description}
-            <button onclick='deleteExpense(event, ${expense.id})'>
+    try{
+        console.log(expense,"this is one expense")
+        const parentElement = document.getElementById('listOfExpenses');
+        const expenseid = expense._id.toString()
+        const expenseElemId = `expense-${expenseid}`
+        console.log(expenseid , "expenseid>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+        parentElement.innerHTML += `
+            <li id=${expenseElemId}>
+                ${expense.expenseamount} - ${expense.category} - ${expense.description}
+                <button onclick="deleteExpense(event, '${expenseid}')">
                 Delete Expense
             </button>
-        </li>`
+            </li>`
+    } catch (err) {
+        console.log(err)
+    }
 }
 
 function deleteExpense(e, expenseid) {
@@ -95,6 +100,7 @@ function deleteExpense(e, expenseid) {
     axios.delete(`http://localhost:3000/expense/deleteexpense/${expenseid}`,  { headers: {"Authorization" : token} }).then(() => {
         removeExpensefromUI(expenseid);
     }).catch((err => {
+        console.log(err)
         showError(err);
     }))
 }
@@ -102,6 +108,7 @@ function deleteExpense(e, expenseid) {
 function showError(err){
     document.body.innerHTML += `<div style="color:red;"> ${err}</div>`
 }
+
 function showLeaderboard(){
     const inputElement = document.createElement("input")
     inputElement.type = "button"
@@ -114,7 +121,7 @@ function showLeaderboard(){
         var leaderboardElem = document.getElementById('leaderboard')
         leaderboardElem.innerHTML += '<h1> Leader Board </<h1>'
         userLeaderBoardArray.data.forEach((userDetails) => {
-            leaderboardElem.innerHTML += `<li>Name - ${userDetails.name} Total Expense - ${userDetails.totalExpenses || 0} </li>`
+            leaderboardElem.innerHTML += `<li>Name - ${userDetails.name} Total Expense - ${userDetails.totalexpense || 0} </li>`
         })
     }
     document.getElementById("message").appendChild(inputElement);
