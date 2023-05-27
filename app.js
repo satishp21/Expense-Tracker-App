@@ -41,7 +41,8 @@ app.use('/purchase', purchaseRoutes)
 app.use('/premium', premiumFeatureRoutes)
 app.use('/password', resetPasswordRoutes)
 
-mongoose.connect('mongodb+srv://piyushgsuthar7:Ja9jRGepIghA4O6y@cluster0.kngxlkj.mongodb.net/expenseapp?retryWrites=true&w=majority')
+
+mongoose.connect(process.env.MONGO_STRING)
 .then(result => {
   console.log('connected')
   app.listen(process.env.PORT)
