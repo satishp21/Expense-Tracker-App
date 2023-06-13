@@ -63,14 +63,16 @@ const deleteexpense = async (req, res) => {
     console.log('ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssstart')
     try{
     const expenseid = req.params.expenseid; //this is obtained from url of delete req
+
+    if(expenseid == undefined || expenseid.length === 0){
+        return res.status(400).json({success: false})
+    }
+
     const expenseobj  = await Expense.findById(expenseid)
     console.log(expenseobj,">>>>>>>>>>>>>>>>expenseobj")
     const user= await User.find({_id : expenseobj.userId })
     console.log(user,'this is the user>>>>>>>>>')
 
-    if(expenseid == undefined || expenseid.length === 0){
-        return res.status(400).json({success: false, })
-    }
     const totalExpense = Number(user[0].totalexpense.toString()) - Number(expenseobj.expenseamount)
     console.log(totalExpense)
 

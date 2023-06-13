@@ -1,5 +1,5 @@
 const User = require('../models/users');
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcrypt')  //with help of bcrypt we can save the passwords in the form of hash in database
 const jwt = require('jsonwebtoken')
 
 function isstringinvalid(string){
@@ -17,7 +17,7 @@ function isstringinvalid(string){
     if(isstringinvalid(name) || isstringinvalid(email || isstringinvalid(password))){
         return res.status(400).json({err: "Bad parameters . Something is missing"})
     }
-    const saltrounds = 10;
+    const saltrounds = 10;  //this will make sure that different hash will produced even if two user having same passwork this will give extre layer of security
     bcrypt.hash(password, saltrounds, async (err, hash) => {
         
         const user = new User ({ name, email, password: hash})
