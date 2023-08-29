@@ -42,7 +42,7 @@ app.use('/premium', premiumFeatureRoutes)
 app.use('/password', resetPasswordRoutes)
 
 
-mongoose.connect(process.env.MONGO_STRING)
+mongoose.connect('mongodb://127.0.0.1:27017/expense-tracker')
 .then(result => {
   console.log('connected')
   app.listen(process.env.PORT)

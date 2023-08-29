@@ -1,34 +1,35 @@
 const mongoose = require('mongoose')
-const Schema = mongoose.Schema;
-const userSchema = new Schema({
-  name : {
-    type : String,
-    required : true
+// const Schema = mongoose.Schema;
+const userSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
   },
-  email : {
-    type : String,
-    required : true
+  email: {
+    type: String,
+    required: true,
   },
-  password : {
-    type : String,
-    required : true
+  password: {
+    type: String,
+    required: true,
   },
-  ispremiumuser : {
-    type : Boolean,
-    default :false,
-    required : true
+  ispremiumuser: {
+    type: Boolean,
+    default: false,
+    required: true,
   },
-  totalexpense : {
-    type : Number,
-    default :0,
-    required : true
-  }
-})
+  totalexpense: {
+    type: Number,
+    default: 0,
+    required: true,
+  },
+});
 
-module.exports = mongoose.model('User',userSchema)
+// module.exports = mongoose.model('User',userSchema)
 
+const User = mongoose.model("User", userSchema);
 
-
+module.exports = User;
 
 
 // const Sequelize = require('sequelize');

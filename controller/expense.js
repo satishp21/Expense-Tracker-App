@@ -16,7 +16,7 @@ const addexpense = async (req, res) => {
             expenseamount,
             description,
             category,
-            userId: req.user.id
+            user: req.user.id
         });
 
         const savedExpense = await expense.save();
@@ -36,8 +36,8 @@ const getexpenses = async (req, res) => {
         let page = req.params.page || 1;
         let itemsPerPage = Number(req.params.selectedValue || 3);
 
-        const totalItems = await Expense.countDocuments({ userId: req.user.id });
-        const expenses = await Expense.find({ userId: req.user.id })
+        const totalItems = await Expense.countDocuments({ user: req.user.id });
+        const expenses = await Expense.find({ user: req.user.id })
             .skip((page - 1) * itemsPerPage)
             .limit(itemsPerPage);
 
@@ -64,20 +64,21 @@ const deleteexpense = async (req, res) => {
     try{
     const expenseid = req.params.expenseid; //this is obtained from url of delete req
 
+    console.log(expenseid,"expenseid")
+
     if(expenseid == undefined || expenseid.length === 0){
         return res.status(400).json({success: false})
     }
 
-    const expenseobj  = await Expense.findById(expenseid)
-    console.log(expenseobj,">>>>>>>>>>>>>>>>expenseobj")
-    const user= await User.find({_id : expenseobj.userId })
-    console.log(user,'this is the user>>>>>>>>>')
+    const expenseobj = await Expense.findOneAndDelete(expenseid).populate("user")
+    // console.log(expenseobj,">>>>>>>>>>>>>>>>expenseobj")
+    // console.log(expenseobj.user, "this is the user>>>>>>>>>");
 
-    const totalExpense = Number(user[0].totalexpense.toString()) - Number(expenseobj.expenseamount)
+    const totalExpense = Number(expenseobj.user.totalexpense.toString()) - Number(expenseobj.expenseamount)
     console.log(totalExpense)
 
-    await Expense.deleteOne({ _id: expenseid })
-    await User.updateOne({ _id: req.user._id }, { totalexpense: totalExpense })
+    // await Expense.deleteOne({ _id: expenseid })
+    await User.updateOne({ _id: expenseobj.user._id }, { totalexpense: totalExpense })
     
         return res.status(200).json({ success: true, message: "Deleted Successfuly"})
     }catch (err) {
