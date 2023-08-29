@@ -12,26 +12,7 @@ const forgotPasswordSchema = new mongoose.Schema({
     userId: {
         type: String
     },
-    expiresby: {
-        type: Date
-    }
+    createdAt: { type: Date, expires: '1m', default: Date.now }
 });
 
 module.exports = mongoose.model('Forgotpassword', forgotPasswordSchema);
-
-// const Sequelize = require('sequelize');
-// const sequelize = require('../util/database');
-
-// //id, name , password, phone number, role
-
-// const Forgotpassword = sequelize.define('forgotpassword', {
-//     id: {
-//         type: Sequelize.UUID,
-//         allowNull: false,
-//         primaryKey: true
-//     },
-//     active: Sequelize.BOOLEAN,
-//     expiresby: Sequelize.DATE
-// })
-
-// module.exports = Forgotpassword;
